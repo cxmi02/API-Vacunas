@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Vaccine } from '../entities/vaccine.entity';
 import { CreateVaccineDto } from '../dto/create-vaccine.dto';
-import { UpdateVaccineDto } from '../dto/update-vaccine.dto';
 
 @Injectable()
 export class VaccineService {
-  create(createVaccineDto: CreateVaccineDto) {
-    return 'This action adds a new vaccine';
+  constructor(
+    @InjectModel(Vaccine.name) private vaccineModel: Model<Vaccine>,
+  ) {}
+
+  async create(createVaccineDto: CreateVaccineDto): Promise<Vaccine> {
+    if (createVaccineDto.maxAge < 0) {
+      throw new BadRequestException(
+        'La edad máxima debe ser un número positivo.',
+      );
+    }
+
+    const vaccine = new this.vaccineModel(createVaccineDto);
+    return vaccine.save();
   }
 
-  findAll() {
-    return `This action returns all vaccine`;
+  async isSuitableForChild(
+    vaccineId: string,
+    childAge: number,
+  ): Promise<boolean> {
+    const vaccine = await this.vaccineModel.findById(vaccineId).exec();
+    if (!vaccine) {
+      throw new BadRequestException('Vacuna no encontrada.');
+    }
+    return childAge <= vaccine.maxAge;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vaccine`;
+  async findAll(): Promise<Vaccine[]> {
+    return this.vaccineModel.find().exec();
   }
 
-  update(id: number, updateVaccineDto: UpdateVaccineDto) {
-    return `This action updates a #${id} vaccine`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} vaccine`;
+  async findOne(id: string): Promise<Vaccine> {
+    return this.vaccineModel.findById(id).exec();
   }
 }

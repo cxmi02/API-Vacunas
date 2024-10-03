@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRestrictionDto } from '../dto/create-restriction.dto';
-import { UpdateRestrictionDto } from '../dto/update-restriction.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Restriction } from '../entities/restriction.entity';
 
 @Injectable()
 export class RestrictionService {
-  create(createRestrictionDto: CreateRestrictionDto) {
-    return 'This action adds a new restriction';
+  constructor(
+    @InjectModel(Restriction.name) private restrictionModel: Model<Restriction>,
+  ) {}
+
+  async create(childId: string, municipalityId: string): Promise<Restriction> {
+    const existingRestriction = await this.restrictionModel.findOne({
+      child: childId,
+    });
+    if (existingRestriction) {
+      existingRestriction.municipality = municipalityId;
+      return existingRestriction.save();
+    } else {
+      const restriction = new this.restrictionModel({
+        child: childId,
+        municipality: municipalityId,
+      });
+      return restriction.save();
+    }
   }
 
-  findAll() {
-    return `This action returns all restriction`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} restriction`;
-  }
-
-  update(id: number, updateRestrictionDto: UpdateRestrictionDto) {
-    return `This action updates a #${id} restriction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} restriction`;
+  async findByChild(childId: string): Promise<Restriction | null> {
+    return this.restrictionModel.findOne({ child: childId }).exec();
   }
 }

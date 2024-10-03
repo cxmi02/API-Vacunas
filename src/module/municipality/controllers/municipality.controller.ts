@@ -1,45 +1,23 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { CreateMunicipalityDto } from '../dto/create-municipality.dto';
-import { UpdateMunicipalityDto } from '../dto/update-municipality.dto';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { MunicipalityService } from '../service/municipality.service';
+import { CreateMunicipalityDto } from '../dto/create-municipality.dto';
+import { Municipality } from '../entities/municipality.entity';
 
-@Controller('municipality')
+@Controller('municipalities')
 export class MunicipalityController {
   constructor(private readonly municipalityService: MunicipalityService) {}
 
   @Post()
-  create(@Body() createMunicipalityDto: CreateMunicipalityDto) {
+  async create(
+    @Body() createMunicipalityDto: CreateMunicipalityDto,
+  ): Promise<Municipality> {
     return this.municipalityService.create(createMunicipalityDto);
   }
 
-  @Get()
-  findAll() {
-    return this.municipalityService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.municipalityService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateMunicipalityDto: UpdateMunicipalityDto,
-  ) {
-    return this.municipalityService.update(+id, updateMunicipalityDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.municipalityService.remove(+id);
+  @Get('by-department/:departmentName')
+  async findByDepartmentName(
+    @Param('departmentName') departmentName: string,
+  ): Promise<any[]> {
+    return this.municipalityService.findByDepartmentName(departmentName);
   }
 }

@@ -1,45 +1,35 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
+  Get,
   Param,
-  Delete,
+  NotFoundException,
 } from '@nestjs/common';
-import { RestrictionService } from '../service/restriction.service';
 import { CreateRestrictionDto } from '../dto/create-restriction.dto';
-import { UpdateRestrictionDto } from '../dto/update-restriction.dto';
+import { RestrictionService } from '../service/restriction.service';
+import { Restriction } from '../entities/restriction.entity';
 
-@Controller('restriction')
+@Controller('restrictions')
 export class RestrictionController {
   constructor(private readonly restrictionService: RestrictionService) {}
 
   @Post()
-  create(@Body() createRestrictionDto: CreateRestrictionDto) {
-    return this.restrictionService.create(createRestrictionDto);
+  async create(@Body() createRestrictionDto: CreateRestrictionDto) {
+    const { child, municipality } = createRestrictionDto;
+    return this.restrictionService.create(child, municipality);
   }
 
-  @Get()
-  findAll() {
-    return this.restrictionService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.restrictionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateRestrictionDto: UpdateRestrictionDto,
-  ) {
-    return this.restrictionService.update(+id, updateRestrictionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.restrictionService.remove(+id);
+  @Get(':childId')
+  async findByChild(
+    @Param('childId') childId: string,
+  ): Promise<Restriction | null> {
+    const restriction = await this.restrictionService.findByChild(childId);
+    if (!restriction) {
+      throw new NotFoundException(
+        `No restrictions found for child with ID ${childId}`,
+      );
+    }
+    return restriction;
   }
 }
