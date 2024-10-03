@@ -1,3 +1,35 @@
+# **Microservices vaccines**
+
+This API allows you to manage and query information about children, grouped by municipality, and to detail whether they have received a vaccine. It also includes the functionality to calculate the average age of children in a specific municipality.
+
+## Content Table
+
+- [**Microservices vaccines**](#microservices-vaccines)
+  - [Content Table](#content-table)
+  - [Functionalities](#functionalities)
+  - [Project Configuration](#project-configuration)
+  - [Running the App](#running-the-app)
+  - [Gitflow Branching Strategy](#gitflow-branching-strategy)
+  - [Participant](#participant)
+  - [License](#license)
+
+
+## Functionalities
+
+* Add children.
+* Add vaccines.
+* List children.
+* Calculate the average age of children in a municipality.
+* List available vaccines.
+
+**Technologies Used**
+* **Angular:** Creating dynamic and single-page web applications
+* **NestJS:** Framework for building scalable and maintainable microservices.
+* **TypeScript:** Programming language that provides static typing and advanced development features.
+* **MongoDB:** NoSQL database for document storage.
+* **Confluence:** Platform for team documentation and collaboration.
+
+
 ## Project Configuration
 
 To run the project locally, clone the repository and set up the necessary environment variables for the database.
@@ -14,45 +46,46 @@ $ npm install
 $ cp .env.example .env
 
 # Edit the .env file
-$ DB_CONNECTION = Connection
-$ DB_USER = user
-$ DB_PASSWORD = password
-$ DB_CLUSTER = cluster
-$ DB_NAME = name
+$ DB_CONNECTION= your connection
+$ DB_USER= your user
+$ DB_PASSWORD= your password
+$ DB_CLUSTER= your host
+$ DB_NAME= your database name
+$ PORT= 3000
 ```
 
-
-## Compile and run the project
+## Running the App
 
 ```bash
 # development
 $ npm run start
 
-# watch mode
+# watch mode and Run Docker
 $ npm run start:dev
 
 # production mode
 $ npm run start:prod
 ```
 
-## Run tests
+## Gitflow Branching Strategy
 
-```bash
-# unit tests
-$ npm run test
+This project follows the Gitflow strategy, a robust model for software development. Here is how the branches are organized and their purpose:
 
-# e2e tests
-$ npm run test:e2e
+* `main:` Main branch with stable code for production. 
+* `dev:` Development branch with the latest features before production. 
+* `feat/NameTask:` Branch of tasks with functionalities, identified by to the task name.
 
-# test coverage
-$ npm run test:cov
-```
+The work is integrated into the 'dev' branch for integration testing. Once 'dev' is stable and ready to be released, it is merged into 'main'.
 
-## Stay in touch
+If you want to contribute to the project, create a new branch from 'dev' using the appropriate prefix (feat/NameTask). After finishing your work and testing, open a Pull Request towards 'dev'.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Participant
+
+María Camila Sepúlveda Giraldo - Software Developer.
+
+* **GitHub:** [cxmi02](https://github.com/cxmi02)
+* **Instagram:** [@k_amila2002](https://www.instagram.com/k_amila2002/)
+* **Email:** sepulveda.giraldo.camila@gmail.com
 
 ## License
 
