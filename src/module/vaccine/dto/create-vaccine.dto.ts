@@ -1,14 +1,12 @@
-import { IsString, IsNumber, IsOptional, IsArray } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateVaccineDto {
+  @IsNotEmpty()
   @IsString()
   name: string;
 
+  @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   maxAge: number;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  child?: string[];
 }

@@ -1,15 +1,24 @@
-import { IsString, IsNumber, IsMongoId } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsInt, Min } from 'class-validator';
 
 export class CreateChildDto {
-  @IsString()
-  identity: string;
-
+  @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsNumber()
+  @IsNotEmpty()
+  @IsInt()
+  @Min(0)
   age: number;
 
-  @IsMongoId()
+  @IsNotEmpty()
+  @IsString()
+  idCard: string;
+
+  @IsOptional()
+  @IsString()
   municipality?: string;
+
+  @IsOptional()
+  @IsString()
+  vaccine?: string;
 }

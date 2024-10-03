@@ -1,42 +1,55 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
+  Get,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ChildService } from '../service/child.service';
+import { Child } from '../entities/child.entity';
 import { CreateChildDto } from '../dto/create-child.dto';
 import { UpdateChildDto } from '../dto/update-child.dto';
 
-@Controller('child')
+@Controller('children')
 export class ChildController {
   constructor(private readonly childService: ChildService) {}
 
   @Post()
-  create(@Body() createChildDto: CreateChildDto) {
+  async create(@Body() createChildDto: CreateChildDto): Promise<Child> {
     return this.childService.create(createChildDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Child[]> {
     return this.childService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.childService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Child> {
+    return this.childService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto) {
-    return this.childService.update(+id, updateChildDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateChildDto: UpdateChildDto,
+  ): Promise<Child> {
+    return this.childService.update(id, updateChildDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.childService.remove(+id);
+  async remove(@Param('id') id: string): Promise<Child> {
+    return this.childService.remove(id);
+  }
+
+  @Get('average-age/:municipalityId')
+  async getAverageAge(
+    @Param('municipalityId') municipalityId: string,
+  ): Promise<{ averageAge: number }> {
+    const averageAge =
+      await this.childService.getAverageAgeByMunicipality(municipalityId);
+    return { averageAge };
   }
 }
