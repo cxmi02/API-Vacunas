@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Municipality } from '../entities/municipality.entity';
 import { CreateMunicipalityDto } from '../dto/create-municipality.dto';
-import { UpdateMunicipalityDto } from '../dto/update-municipality.dto';
+import { Department } from 'src/module/department/entities/department.entity';
 
 @Injectable()
 export class MunicipalityService {
-  create(createMunicipalityDto: CreateMunicipalityDto) {
-    return 'This action adds a new municipality';
+  constructor(
+    @InjectModel(Municipality.name)
+    private municipalityModel: Model<Municipality>,
+    @InjectModel(Department.name) private departmentModel: Model<Department>,
+  ) {}
+
+  async create(
+    createMunicipalityDto: CreateMunicipalityDto,
+  ): Promise<Municipality> {
+    const municipality = new this.municipalityModel(createMunicipalityDto);
+    return municipality.save();
   }
 
-  findAll() {
-    return `This action returns all municipality`;
-  }
+  async findByDepartmentName(departmentName: string): Promise<any[]> {
+    const department = await this.departmentModel.findOne({
+      name: departmentName,
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} municipality`;
-  }
+    if (!department) {
+      return [];
+    }
 
-  update(id: number, updateMunicipalityDto: UpdateMunicipalityDto) {
-    return `This action updates a #${id} municipality`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} municipality`;
+    return this.municipalityModel
+      .find({ department: department._id })
+      .populate('department', 'name')
+      .exec();
   }
 }

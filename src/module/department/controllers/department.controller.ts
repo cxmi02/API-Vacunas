@@ -1,45 +1,21 @@
-import { CreateDepartmentDto } from '../dto/create-department.dto';
-import { UpdateDepartmentDto } from '../dto/update-department.dto';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { DepartmentService } from '../service/department.service';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { CreateDepartmentDto } from '../dto/create-department.dto';
+import { Department } from '../entities/department.entity';
 
-@Controller('department')
+@Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Post()
-  create(@Body() createDepartmentDto: CreateDepartmentDto) {
+  async create(
+    @Body() createDepartmentDto: CreateDepartmentDto,
+  ): Promise<Department> {
     return this.departmentService.create(createDepartmentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.departmentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.departmentService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateDepartmentDto: UpdateDepartmentDto,
-  ) {
-    return this.departmentService.update(+id, updateDepartmentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.departmentService.remove(+id);
+  @Get(':name')
+  async findByName(@Param('name') name: string): Promise<Department> {
+    return this.departmentService.findByName(name);
   }
 }

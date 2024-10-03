@@ -6,6 +6,7 @@ import { DepartmentModule } from './module/department/department.module';
 import { MunicipalityModule } from './module/municipality/municipality.module';
 import { RestrictionModule } from './module/restriction/restriction.module';
 import { VaccineModule } from './module/vaccine/vaccine.module';
+import { PersistenceModule } from './libs/persistence';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { VaccineModule } from './module/vaccine/vaccine.module';
       load: [dbConfig],
       isGlobal: true,
     }),
-    ChildModule,
+    PersistenceModule,
     DepartmentModule,
     MunicipalityModule,
+    ChildModule,
     RestrictionModule,
     VaccineModule,
   ],
